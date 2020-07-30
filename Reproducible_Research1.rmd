@@ -2,11 +2,12 @@
 title: "Course 1 - Reproducible Research"
 author: "Julio Cesar Melcchioretto"
 date: "7/29/2020"
-output: html_document
-    keep_md: true
+
 ---
+```{r}
 library(dplyr)
 library (ggplot2)
+```
 
 ## Loading and preprocessing the data
 show below the summary of the activity data
@@ -23,10 +24,13 @@ activity_group <- group_by(activity, date)
 total_steps <- summarize(activity_group, steps = sum(steps), na.rm = TRUE)
 hist(total_steps$steps, xlab = "total steps per day", main = "Total Steps per day", breaks = 10)
 ```
+
+
 the mean of steps per day is:
 ```{r}
 mean(total_steps$steps, na.rm = TRUE)
 ```
+
 the median of steps per day is:
 ```{r}
 median(total_steps$steps, na.rm = TRUE)
@@ -38,6 +42,8 @@ average_activity <- aggregate(activity$steps, by = list(activity$interval), FUN=
 names(average_activity) <- c("interval", "mean_steps")
 plot(average_activity$interval, average_activity$mean_steps, type = "l", xlab = "5-minutes-interval", ylab = "average across all days", main = "average number of steps per interval")
 ```
+
+
 the 5 minutes interval which contains the maximum number of steps is:
 ```{r}
 average_activity[which.max(average_activity$mean_steps),]
@@ -48,25 +54,30 @@ The number of missing data is:
 ```{r}
 sum(is.na(activity))
 ```
+
 filling all the missing values in the dataset. The NA data is being replaced by mean for the same interval
 ```{r}
 activity_new <- transform(activity, steps = ifelse(is.na(activity$steps), yes = average_activity$mean_steps[match(activity$interval, average_activity$interval)], no = activity$steps))
 ```
+
 showed below ths histogram of steps per day with the new dataset
 ```{r}
 activity_group_new <- group_by(activity_new, date)
 total_steps_new <- summarize(activity_group_new, steps = sum(steps))
 hist(total_steps_new$steps, xlab = "total steps per day", main = "Total Steps per day", breaks = 10)
 ```
+
 the mean of steps per day is:
 ```{r}
 mean(total_steps_new$steps)
 ```
+
 the median of steps per day is:
 ```{r}
-median(total_steps$steps)
+median(total_steps_new$steps)
 ```
 ## Are there differences in activity patterns between weekdays and weekends?
+
 plot of average number of steps take across the day by weekday or weekends
 ```{r}
 activity_new$weekday <- weekdays(activity_new$date)
