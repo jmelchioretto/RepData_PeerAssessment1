@@ -22,7 +22,9 @@ showed below ths histogram of steps per day
 ```{r}
 activity_group <- group_by(activity, date)
 total_steps <- summarize(activity_group, steps = sum(steps), na.rm = TRUE)
+png("plot1.png")
 hist(total_steps$steps, xlab = "total steps per day", main = "Total Steps per day", breaks = 10)
+dev.off()
 ```
 
 
@@ -40,7 +42,9 @@ plot of average number of steps take across the day
 ```{r}
 average_activity <- aggregate(activity$steps, by = list(activity$interval), FUN=mean, na.rm=TRUE)
 names(average_activity) <- c("interval", "mean_steps")
+png("plot2.png")
 plot(average_activity$interval, average_activity$mean_steps, type = "l", xlab = "5-minutes-interval", ylab = "average across all days", main = "average number of steps per interval")
+dev.off()
 ```
 
 
@@ -64,7 +68,9 @@ showed below ths histogram of steps per day with the new dataset
 ```{r}
 activity_group_new <- group_by(activity_new, date)
 total_steps_new <- summarize(activity_group_new, steps = sum(steps))
+png("plot3.png")
 hist(total_steps_new$steps, xlab = "total steps per day", main = "Total Steps per day", breaks = 10)
+dev.off()
 ```
 
 the mean of steps per day is:
@@ -84,5 +90,8 @@ activity_new$weekday <- weekdays(activity_new$date)
 activity_new <- transform(activity_new, weekday = ifelse(activity_new$weekday =="Saturday" | activity_new$weekday =="Sunday", yes = "Weekend", no = "Weekday"))
 final_data <- aggregate(activity_new$steps ~ activity_new$interval + activity_new$weekday, FUN=mean)
 names(final_data) <- c("interval", "weekday", "steps")
-ggplot(final_data, aes(interval, steps))+geom_line()+facet_grid(.~weekday)
+png("plot4.png")
+g<- ggplot(final_data, aes(interval, steps))+geom_line()+facet_grid(.~weekday)
+print(g)
+dev.off()
 ```
